@@ -8,7 +8,6 @@ const buildPath = path.resolve(__dirname, 'build');
 const serverConfig = {
   target: 'node',
   entry: {
-    sv_exports: './server/sv_export.ts',
     sv_server: './server/server.ts',
   },
   output: {
@@ -64,7 +63,7 @@ const serverConfig = {
 const clientConfig = {
   target: 'node',
   entry: {
-    cl_exports: './client/cl_export.ts',
+    exports: './client/exports.ts',
     cl_client: './client/client.ts',
   },
   output: {
@@ -96,7 +95,7 @@ const clientConfig = {
       debugProtection: false,        // Simplified obfuscation
       disableConsoleOutput: false,   // Simplified obfuscation
       splitStrings: false,           // Simplified obfuscation
-    }),
+    }), 
     new ESLintPlugin({
       extensions: ['ts', 'tsx', 'js'],
       emitWarning: false,

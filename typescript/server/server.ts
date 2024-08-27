@@ -1,48 +1,43 @@
-import { SQL } from "./sv_export";
+// TypeScript file
 
-function AddLog(type: string, user: any, log: string, data: any)  {
-  if (!type) {
-    type = "None"
-  } else  {
-    type = type.toString();
-  }
-
-  if (type == "Exploiter") {
-    // NEEDS SOME LOGIC BUT NO IDEA WHAT TO ADD HERE
-  }
-  const steam = user.license;
+// Assuming you're using the FiveM framework with the `redux_fw` resource
+const exp = global.exports;
+const FW = exp["redux_fw"].GetCoreObject();
 
 
-  log = log.toString() || "None";
-
-  data = JSON.stringify(data) || "None";
-
-
-  const query = "INSERT INTO `logs` (type, log, data, steam) VALUES (@type, @log,  @data, @steam)"
-
-
-  const variables = {
-    ["type"] : type,
-    ["log"] : log,
-    ["data"] : data,
-    ["steam"] : steam
-  }
-
-
-  SQL(query, variables);
+// Define the type for logging data
+interface LogData {
+    [key: string]: any;
 }
 
+// AddLog function implementation
+function AddLog(type: string = "None", user?: string, log: string = "Not set", data: LogData = {}): void {
+    const source = global.source as number; // Get the source of the event
 
+    // Ensure type is a string; default to "None"
+    type = typeof type === 'string' ? type : "None";
 
-onNet("redux_logs:saveLog", function(type: string, user: any, log: string, data: any)  {
+    // Get the player's source if user is not provided
+    const steam = user || "Empty";
 
-  AddLog(type, user, log, data)
-})
+    // Convert log and data to strings
+    log = typeof log === 'string' ? log : "Not set";
+    const dataString = JSON.stringify(data) || "Not set";
 
-/* on("onResourceStart", (resName: string) => {
-  if (resName === GetCurrentResourceName()) {
-    console.log("TypeScript boilerplate started!");
-    console.log(myRandomData);
-  }
-});
- */
+    // Prepare the SQL query and parameters
+    const query = "INSERT INTO `logs` (type, log, data, steam) VALUES (@type, @log, @data, @steam)";
+    const parameters = {
+        "@type": type,
+        "@log": log,
+        "@data": dataString,
+        "@steam": steam
+    };
+
+    // Execute the query
+    exp["oxmysql"].execute(query, parameters, () => {});
+
+    console.log("New log added!");
+}
+
+// Expose the AddLog function to be used by other scripts
+exp("AddLog", AddLog);

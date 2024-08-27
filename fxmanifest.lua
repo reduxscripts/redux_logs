@@ -10,14 +10,14 @@ description 'Redux Scripts Logs system'
 author 'Redux Scripts'
 
 client_scripts {
-    'build/client/cl_*.js',
+    'build/client/*.js',
 }
 
 
 server_scripts {
     '@oxmysql/lib/MySQL.lua',
-    'build/server/sv_*.js',
-    'server/*.js'
+    'build/server/*.js',
+    --'server/*.js'
 
 }
 
